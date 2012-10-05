@@ -48,7 +48,11 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     code <<-EOF
   #!/bin/sh
   cd #{app['deploy_to']}/current; git fetch
-  cd #{app['deploy_to']}/current; git checkout #{app['revision'][app['chef_environment']]}
+  if [ "#{app['revision'][app['chef_environment']]}"="HEAD" || "#{app['revision'][app['chef_environment']]}"="" ]; then
+    cd #{app['deploy_to']}/current; git checkout #{app['revision'][app['chef_environment']]}
+  else
+    cd #{app['deploy_to']}/current; git merge origin origin/master
+  fi
   cd #{app['deploy_to']}/current; git submodule init
   cd #{app['deploy_to']}/current; git submodule update
     EOF
@@ -64,28 +68,37 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
   if app['databases'][app['chef_environment']]
     stage = app['databases'][app['chef_environment']]
 
-    template "#{app['deploy_to']}/current/Configuration/#{app['chef_environment'].capitalize}/Settings.yaml" do
+    # Make sure context "Development" is always included
+    contexts = Array.new
+    contexts[0] = app['chef_environment'].capitalize
+    if app['chef_environment'] != 'development'
+      contexts[1] = 'Development'
+    end
+
+    contexts.each do |context|
+      template "#{app['deploy_to']}/current/Configuration/#{context}/Settings.yaml" do
         source "settings.yaml.erb"
         owner app['owner']
         group app['owner']
         mode "0644"
         variables(
-          :database => stage['database'],
-          :user => stage['username'],
-          :password => node[:mysql][:users][stage['username']][:password]
+            :database => stage['database'],
+            :user => stage['username'],
+            :password => node[:mysql][:users][stage['username']][:password]
         )
       end
+    end
   end
 
   # Write htaccess
   template "#{app['deploy_to']}/current/Web/.htaccess" do
-      source "htaccess.erb"
-      owner app['owner']
-      group app['owner']
-      mode "0644"
-      variables(
+    source "htaccess.erb"
+    owner app['owner']
+    group app['owner']
+    mode "0644"
+    variables(
         :context => app['chef_environment'].capitalize
-      )
+    )
   end
 
   # Run doctrine update
