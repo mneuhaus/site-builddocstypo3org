@@ -48,11 +48,7 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     code <<-EOF
   #!/bin/sh
   cd #{app['deploy_to']}/current; git fetch
-  if [ "#{app['revision'][app['chef_environment']]}"="HEAD" || "#{app['revision'][app['chef_environment']]}"="" ]; then
-    cd #{app['deploy_to']}/current; git checkout #{app['revision'][app['chef_environment']]}
-  else
-    cd #{app['deploy_to']}/current; git merge origin origin/master
-  fi
+  cd #{app['deploy_to']}/current; git checkout #{app['revision'][app['chef_environment']]}
   cd #{app['deploy_to']}/current; git submodule init
   cd #{app['deploy_to']}/current; git submodule update
     EOF
