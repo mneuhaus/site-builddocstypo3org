@@ -19,7 +19,7 @@
 app = node.run_state[:current_app]
 
 # Install python packages
-%w{sphinx PyYAML}.each do |package|
+%w{sphinx PyYAML docutils pygments}.each do |package|
   python_pip "#{package}" do
     action :install
   end
