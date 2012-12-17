@@ -1,0 +1,61 @@
+[url "ssh://fab1en@review.typo3.org:29418"]
+	pushInsteadOf = git://git.typo3.org
+[color]
+	ui = auto
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[core]
+	autocrlf = input
+	safecrlf = true
+    filemode = false
+
+# More aliases
+# http://www.robo47.net/blog/208-Git-Aliases-Submodules-and-Symfony
+
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	s = status -s
+	br = branch
+
+	# ADD
+	a = add .
+
+	# BRANCH
+	track = for-each-ref --format='%(refname:short)     <---   %(upstream:short)' refs/heads
+	tr = for-each-ref --format='%(refname:short)     <---   %(upstream:short)' refs/heads
+
+	# PUSH
+	pu = push origin master
+
+	# DIFF
+	df = diff
+	ad = diff --name-only --diff-filter=M
+
+	# SHOW
+	dfile =  show --pretty="format:" --name-only
+	dfiles =  show --name-only
+
+	# LOG
+	l1 = log --max-count=1 --stat
+	l2 = log --max-count=2 --stat
+	l3 = log --max-count=3 --stat
+	l4 = log --max-count=4 --stat
+	l5 = log --max-count=5 --stat
+	hs = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short --max-count=10
+	history = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	pa = log origin/master..HEAD
+
+	# MISC
+	conf = config --global --edit
+	type = cat-file -t
+	dump = cat-file -p
+
+	# Pull submodules from origin master
+	pulls = "!f() { git pull && git submodule update --init --recursive; }; f"
+
+[mergetool]
+	keepBackup = true

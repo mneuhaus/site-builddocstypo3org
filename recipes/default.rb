@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-search(:apps, 'id:docs-typo3-org') do |app|
+search(:apps, 'id:build-docs-typo3-org') do |app|
   # condition "& node.run_list.roles" was removed
   (app["roles"]).each do |app_role, role|
     role.each do |recipe|

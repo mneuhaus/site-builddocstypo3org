@@ -39,4 +39,20 @@ if app['owner'] && app['home']
     home "#{app['home']}"
     supports :manage_home=>true
   end
+
+  # Make sure the user is part of www-data group for write permission
+  group "www-data" do
+    action :modify
+    members app['owner']
+    append true
+  end
+
+  # Add some git default shortcut for convenience sake
+  template "#{app['home']}/.gitconfig" do
+    path "#{app['home']}/.gitconfig"
+    source "gitconfig.erb"
+    owner "#{app['owner']}"
+    group "#{app['owner']}"
+  end
+
 end

@@ -97,14 +97,37 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     )
   end
 
-  # Run doctrine update
-  #bash "doctrine-update" do
-  #  user app['owner']
-  #  cwd "#{app['deploy_to']}/current"
-  #  code <<-EOF
-  ##!/bin/bash
-  #FLOW3_CONTEXT=Production ./flow3 doctrine:update
-  #  EOF
-  #end
+
+  # Add cron task to start the queue
+  bash "post-installation" do
+    user 'root'
+    cwd app['release_to']
+    code <<-EOF
+#!/bin/sh
+
+# Usage: ./flow3 core:setfilepermissions <commandlineuser> <webuser> <webgroup>
+
+FLOW3_CONTEXT=Production ./flow3 doctrine:update
+FLOW3_CONTEXT=Production ./flow3 flow3:core:setfilepermissions builddocstypo3org www-data www-data
+
+cd #{app['release_to']}/Packages/Application/RestTools; git config core.filemode false
+cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemode false
+
+    EOF
+
+  end
+
+  # Add a scheduler job starting the queue
+  # However, it must not be set for in Vagrant context
+  unless Chef::Config['solo']
+    cron "start-queue" do
+      user app['owner']
+      minute "*/5"
+      command "cd #{app['release_to']}; FLOW3_CONTEXT=Production ./flow3 queue:start"
+    end
+  end
+
 end
+
+
 

@@ -60,4 +60,8 @@ if app['stages'][app['chef_environment']]
     enable true
     notifies  :restart, 'service[apache2]'
   end
+
+  apache_module "speling" do
+    enable true
+  end
 end
