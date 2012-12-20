@@ -107,8 +107,8 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
 
 # Usage: ./flow3 core:setfilepermissions <commandlineuser> <webuser> <webgroup>
 
-FLOW3_CONTEXT=Production ./flow3 doctrine:update
 FLOW3_CONTEXT=Production ./flow3 flow3:core:setfilepermissions builddocstypo3org www-data www-data
+FLOW3_CONTEXT=Production ./flow3 doctrine:update
 
 cd #{app['release_to']}/Packages/Application/RestTools; git config core.filemode false
 cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemode false
@@ -124,6 +124,20 @@ cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemod
       user app['owner']
       minute "*/5"
       command "cd #{app['release_to']}; FLOW3_CONTEXT=Production ./flow3 queue:start"
+    end
+
+    template "/root/keep-alive.sh" do
+      source "keep-alive.sh"
+      mode "0755"
+      variables(
+          :release_to => app['release_to'],
+          :server_name => app['stages'][app['chef_environment']]['server_name']
+      )
+    end
+
+    cron "keep-alive" do
+      minute "*/5"
+      command "sh /root/keep-alive.sh"
     end
   end
 
