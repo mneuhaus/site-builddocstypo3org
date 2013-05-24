@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docs
+# Cookbook Name:: site-docstypo3org
 # Recipe:: default
 #
 # Copyright 2012, TYPO3 Association
@@ -31,7 +31,7 @@ search(:apps, 'id:build-docs-typo3-org') do |app|
 
       # Store app to the node
       node.run_state[:current_app] = app
-      include_recipe "site-docs::#{recipe}"
+      include_recipe "site-docstypo3org::#{recipe}"
     end
   end
 end
