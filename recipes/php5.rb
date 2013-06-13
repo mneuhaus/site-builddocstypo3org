@@ -24,6 +24,16 @@ template "#{node['php']['conf_dir']}/php.ini" do
   mode "0644"
 end
 
+# Customize suhosin.ini configuration
+template "/etc/php5/cli/conf.d/suhosin.ini" do
+  source "suhosin.ini"
+end
+
+# Customize apc.ini configuration
+template "/etc/php5/cli/conf.d/apc.ini" do
+  source "apc.ini"
+end
+
 # install apc pecl with directives
 #php_pear "apc" do
 #  action :install
