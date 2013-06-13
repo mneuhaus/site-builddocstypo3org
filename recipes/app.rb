@@ -34,25 +34,11 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
   end
 
   # Clone repository
-  bash app['id'] do
+  bash "clone-application-#{app['id']}" do
     user app['owner']
     cwd app['deploy_to']
-    code "git clone --recursive #{app['repository']} current"
+    code "git clone #{app['repository']} current"
     not_if { ::File.exists? "#{app['deploy_to']}/current" }
-  end
-
-  # Write a small script for convenience sake
-  bash "pull-revision" do
-    user app['owner']
-    cwd app['deploy_to']
-    code <<-EOF
-  #!/bin/sh
-  cd #{app['deploy_to']}/current; git fetch
-  cd #{app['deploy_to']}/current; git checkout #{app['revision'][app['chef_environment']]}
-  cd #{app['deploy_to']}/current; git submodule init
-  cd #{app['deploy_to']}/current; git submodule update
-    EOF
-
   end
 
   # Create symlink
@@ -78,9 +64,9 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
         group app['owner']
         mode "0644"
         variables(
-            :database => stage['database'],
-            :user => stage['username'],
-            :password => node[:mysql][:users][stage['username']][:password]
+          :database => stage['database'],
+          :user => stage['username'],
+          :password => node[:mysql][:users][stage['username']][:password]
         )
       end
     end
@@ -93,28 +79,8 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     group app['owner']
     mode "0644"
     variables(
-        :context => app['chef_environment'].capitalize
+      :context => app['chef_environment'].capitalize
     )
-  end
-
-
-  # Add cron task to start the queue
-  bash "post-installation" do
-    user 'root'
-    cwd app['release_to']
-    code <<-EOF
-#!/bin/sh
-
-# Usage: ./flow3 core:setfilepermissions <commandlineuser> <webuser> <webgroup>
-
-FLOW3_CONTEXT=Production ./flow3 flow3:core:setfilepermissions builddocstypo3org www-data www-data
-FLOW3_CONTEXT=Production ./flow3 doctrine:update
-
-cd #{app['release_to']}/Packages/Application/RestTools; git config core.filemode false
-cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemode false
-
-    EOF
-
   end
 
   # Add a scheduler job starting the queue
@@ -123,15 +89,15 @@ cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemod
     cron "start-queue" do
       user app['owner']
       minute "*/5"
-      command "cd #{app['release_to']}; FLOW3_CONTEXT=Production ./flow3 queue:start"
+      command "cd #{app['release_to']}; ./flow queue:start"
     end
 
     template "/root/keep-alive.sh" do
       source "keep-alive.sh"
       mode "0755"
       variables(
-          :release_to => app['release_to'],
-          :server_name => app['stages'][app['chef_environment']]['server_name']
+        :release_to => app['release_to'],
+        :server_name => app['stages'][app['chef_environment']]['server_name']
       )
     end
 
@@ -140,7 +106,6 @@ cd #{app['release_to']}/Packages/Application/TYPO3.Docs; git config core.filemod
       command "sh /root/keep-alive.sh"
     end
   end
-
 end
 
 
