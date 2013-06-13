@@ -25,6 +25,11 @@ include_recipe "apache2::mod_rewrite"
 include_recipe "apache2::mod_expires"
 include_recipe "apache2::mod_headers"
 
+
+template "/etc/apache2/ports.conf" do
+  source "ports.conf"
+end
+
 ######################################
 # Configure Virtual Host
 ######################################
