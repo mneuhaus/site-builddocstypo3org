@@ -34,20 +34,3 @@ template "/etc/php5/cli/conf.d/apc.ini" do
   source "apc.ini"
 end
 
-# install apc pecl with directives
-#php_pear "apc" do
-#  action :install
-#  directives(:shm_size => 128, :enable_cli => 1)
-#end
-
-#echo"apc.enabled = 1
-#apc.shm_size = 128
-#apc.shm_segments=1
-#apc.write_lock = 1
-#apc.rfc1867 = On
-#apc.ttl=7200
-#apc.user_ttl=7200
-#apc.num_files_hint=1024
-#apc.mmap_file_mask=/tmp/apc.XXXXXX
-#apc.enable_cli=1
-#apc.slam_defense = Off
