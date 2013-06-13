@@ -35,7 +35,7 @@ end
 # Install TYPO3 theme (t3sphinx)
 bash "install_t3sphinx" do
   user "root"
-  cwd "#{app['deploy_to']}/current/Packages/Application/RestTools/ExtendingSphinxForTYPO3"
+  cwd "#{app['deploy_to']}/current/Packages/Application/TYPO3.RestTools/ExtendingSphinxForTYPO3"
   code <<-EOH
   python setup.py install
   EOH
