@@ -22,10 +22,10 @@
 
 app = node.run_state[:current_app]
 
-if app['owner'] && app['home']
+if app['owner'] && app['owner_home']
 
   # Create directory first, sometimes :manage_home=>true from resource "user" does not work
-  directory "#{app['home']}" do
+  directory "#{app['owner_home']}" do
     owner "#{app['owner']}"
     group "#{app['owner']}"
     mode "0755"
@@ -36,7 +36,7 @@ if app['owner'] && app['home']
   user "#{app['owner']}" do
     comment "User for docs.typo3.org Virtual Host"
     shell "/bin/bash"
-    home "#{app['home']}"
+    home "#{app['owner_home']}"
     supports :manage_home=>true
   end
 
@@ -48,8 +48,8 @@ if app['owner'] && app['home']
   end
 
   # Add some git default shortcut for convenience sake
-  template "#{app['home']}/.gitconfig" do
-    path "#{app['home']}/.gitconfig"
+  template "#{app['owner_home']}/.gitconfig" do
+    path "#{app['owner_home']}/.gitconfig"
     source "gitconfig.erb"
     owner "#{app['owner']}"
     group "#{app['owner']}"
