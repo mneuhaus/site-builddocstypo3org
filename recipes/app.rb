@@ -109,4 +109,11 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
 end
 
 
+# Set profile file where global environment variables are defined
+# Notice, it can be a bit dangerous to simply override the file which could evolve with the distrib...
+template "/etc/profile" do
+  source "profile"
+end
+
+
 
