@@ -33,19 +33,6 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     action :create
   end
 
-  # Clone repository
-  bash "clone-application-#{app['id']}" do
-    user app['owner']
-    cwd app['deploy_to']
-    code "git clone #{app['repository']} current"
-    not_if { ::File.exists? "#{app['deploy_to']}/current" }
-  end
-
-  # Create symlink
-  link "#{app['stages'][app['chef_environment']]['document_root']}" do
-    to "#{app['deploy_to']}/current/Web"
-  end
-
   # Write Settings.yaml file
   if app['databases'][app['chef_environment']]
     stage = app['databases'][app['chef_environment']]
@@ -58,7 +45,17 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     end
 
     contexts.each do |context|
-      template "#{app['deploy_to']}/current/Configuration/#{context}/Settings.yaml" do
+
+      # Create shared configuration
+      directory "#{app['home']}/shared/Configuration/#{context}" do
+        owner app['owner']
+        group app['owner']
+        mode "0755"
+        recursive true
+        action :create
+      end
+
+      template "#{app['home']}/shared/Configuration/#{context}/Settings.yaml" do
         source "settings.yaml.erb"
         owner app['owner']
         group app['owner']
@@ -72,24 +69,13 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
     end
   end
 
-  # Write htaccess
-  template "#{app['deploy_to']}/current/Web/.htaccess" do
-    source "htaccess.erb"
-    owner app['owner']
-    group app['owner']
-    mode "0644"
-    variables(
-      :context => app['chef_environment'].capitalize
-    )
-  end
-
   # Add a scheduler job starting the queue
   # However, it must not be set for in Vagrant context
   unless Chef::Config['solo']
     cron "start-queue" do
       user app['owner']
       minute "*/5"
-      command "cd #{app['release_to']}; ./flow queue:start"
+      command "cd #{app['release_to']}; FLOW_CONTEXT=Production ./flow queue:start"
     end
 
     template "/root/keep-alive.sh" do
