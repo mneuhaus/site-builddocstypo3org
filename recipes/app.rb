@@ -72,25 +72,27 @@ if app['deploy_to'] && app['stages'][app['chef_environment']] && app['revision']
   # Add a scheduler job starting the queue
   # However, it must not be set for in Vagrant context
   unless Chef::Config['solo']
-    cron "start-queue" do
-      user app['owner']
-      minute "*/5"
-      command "cd #{app['release_to']}; FLOW_CONTEXT=Production ./flow queue:start"
-    end
-
-    template "/root/keep-alive.sh" do
-      source "keep-alive.sh"
-      mode "0755"
-      variables(
-        :release_to => app['release_to'],
-        :server_name => app['stages'][app['chef_environment']]['server_name']
-      )
-    end
-
-    cron "keep-alive" do
-      minute "*/5"
-      command "sh /root/keep-alive.sh"
-    end
+    #cron "start-queue" do
+    #  user app['owner']
+    #  minute "*/5"
+    #  mailto "fabien.udriot@typo3.org"
+    #  command "cd #{app['release_to']}; FLOW_CONTEXT=Production ./flow queue:start"
+    #end
+    #
+    #template "/root/keep-alive.sh" do
+    #  source "keep-alive.sh"
+    #  mode "0755"
+    #  variables(
+    #    :release_to => app['release_to'],
+    #    :server_name => app['stages'][app['chef_environment']]['server_name']
+    #  )
+    #end
+    #
+    #cron "keep-alive" do
+    #  minute "*/5"
+    #  mailto "fabien.udriot@typo3.org"
+    #  command "sh /root/keep-alive.sh"
+    #end
   end
 end
 
