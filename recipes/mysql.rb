@@ -16,13 +16,24 @@
 # limitations under the License.
 #
 
-
 ####################################################
 # Install MySQL server and create databases
 ####################################################
 include_recipe "mysql::server"
 include_recipe "mysql::client"
 include_recipe "database"
+
+####################################################
+# Install required Gems
+####################################################
+include_recipe "build-essential"
+#chef_gem "mysql" do
+#  action :install
+#end
+
+####################################################
+# Create database and user
+####################################################
 
 connection_info = {:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']}
 
