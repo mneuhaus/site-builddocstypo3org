@@ -1,0 +1,42 @@
+#!/bin/bash
+# libreoffice headless server script
+#
+# chkconfig: 2345 80 30
+# description: headless libreoffice server script
+# processname: libreoffice
+#
+# Author: Vic Vijayakumar
+# Modified by Federico Ch. Tomasczik
+#
+SOFFICE_PATH=/usr/bin/soffice
+PIDFILE=/var/run/libreoffice-server.pid
+USER=<%= @user %>
+
+set -e
+
+case "$1" in
+    start)
+    if [ -f $PIDFILE ]; then
+      echo "LibreOffice headless server has already started."
+      sleep 5
+      exit
+    fi
+      echo "Starting LibreOffice headless server"
+      sudo -H -u $USER $SOFFICE_PATH -headless -nologo -nofirststartwizard -accept="socket,host=127.0.0.1,port=8100;urp" & > /var/log/libreoffice.log 2>&1
+      touch $PIDFILE
+    ;;
+    stop)
+    if [ -f $PIDFILE ]; then
+      echo "Stopping LibreOffice headless server."
+      killall -9 soffice && killall -9 soffice.bin
+      rm -f $PIDFILE
+      exit
+    fi
+      echo "LibreOffice headless server is not running."
+      exit
+    ;;
+    *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+esac
+exit 0
