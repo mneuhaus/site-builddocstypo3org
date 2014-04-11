@@ -25,6 +25,22 @@ app = node.run_state[:current_app]
   end
 end
 
+# Create directory for Sphinx contrib
+directory "#{app['home']}/Sphinx-Contrib" do
+  owner "#{app['home']}/Sphinx-Contrib"
+  group "#{app['group']}"
+  mode "0755"
+  recursive true
+  action :create
+end
+
+# Clone Sphinx-Contrib
+hg "#{app['home']}/Sphinx-Contrib" do
+  repository "https://bitbucket.org/xperseguers/sphinx-contrib"
+  reference "tip"
+  action :sync
+end
+
 # Create directory for Rest Tool
 directory "#{app['home']}/RestTools" do
   owner "#{app['owner']}"
