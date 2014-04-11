@@ -25,19 +25,25 @@ app = node.run_state[:current_app]
   end
 end
 
-
-# More stuff to configure probably targeting Latex
-# --------------------------------------------------
-#
-# Latex:
-# http://wiki.typo3.org/Rendering_reST_on_Linux#Installing_LaTeX
+# Install some reST tools for TYPO3.
+git "#{app['home']}/RestTools" do
+  user "#{app['owner']}"
+  group "#{app['group']}"
+  repository "git://git.typo3.org/Documentation/RestTools.git"
+  action :sync
+end
 
 # Install TYPO3 theme (t3sphinx)
 bash "install_t3sphinx" do
   user "root"
-  cwd "#{app['deploy_to']}/current/Packages/Application/TYPO3.RestTools/ExtendingSphinxForTYPO3"
+  cwd "#{app['home']}/RestTools/ExtendingSphinxForTYPO3"
   code <<-EOH
   python setup.py install
   EOH
 end
 
+# More stuff might be required related to Latex in the future...
+# --------------------------------------------------------------
+#
+# Latex:
+# http://wiki.typo3.org/Rendering_reST_on_Linux#Installing_LaTeX
