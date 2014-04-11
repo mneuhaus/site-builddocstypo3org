@@ -34,7 +34,7 @@ if app['owner'] && app['owner_home']
   end
 
   user "#{app['owner']}" do
-    comment "User for docs.typo3.org Virtual Host"
+    comment "User for build.docs.typo3.org Virtual Host"
     shell "/bin/bash"
     home "#{app['owner_home']}"
     supports :manage_home=>true
