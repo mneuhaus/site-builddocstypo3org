@@ -41,7 +41,7 @@ if app['stages'][app['chef_environment']]
 
   directory "#{stage['log_directory']}" do
     owner "#{app['owner']}"
-    group "#{app['owner']}"
+    group "#{app['group']}"
     mode "0755"
     recursive true
     action :create

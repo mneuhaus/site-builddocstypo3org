@@ -25,7 +25,16 @@ app = node.run_state[:current_app]
   end
 end
 
-# Install some reST tools for TYPO3.
+# Create directory for Rest Tool
+directory "#{app['home']}/RestTools" do
+  owner "#{app['owner']}"
+  group "#{app['group']}"
+  mode "0755"
+  recursive true
+  action :create
+end
+
+# Clone reST tools for TYPO3.
 git "#{app['home']}/RestTools" do
   user "#{app['owner']}"
   group "#{app['group']}"
@@ -33,7 +42,7 @@ git "#{app['home']}/RestTools" do
   action :sync
 end
 
-# Install TYPO3 theme (t3sphinx)
+# ... and install TYPO3 theme (t3sphinx)
 bash "install_t3sphinx" do
   user "root"
   cwd "#{app['home']}/RestTools/ExtendingSphinxForTYPO3"
