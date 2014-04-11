@@ -42,7 +42,7 @@ git "#{app['home']}/RestTools" do
   action :sync
 end
 
-# ... and install TYPO3 theme (t3sphinx)
+# ... install TYPO3 theme (t3sphinx)
 bash "install_t3sphinx" do
   user "root"
   cwd "#{app['home']}/RestTools/ExtendingSphinxForTYPO3"
@@ -51,8 +51,11 @@ bash "install_t3sphinx" do
   EOH
 end
 
-# More stuff might be required related to Latex in the future...
-# --------------------------------------------------------------
-#
-# Latex:
-# http://wiki.typo3.org/Rendering_reST_on_Linux#Installing_LaTeX
+# ... and convert the Share font
+bash "convert_sharefont" do
+  user "root"
+  cwd "#{app['home']}/RestTools/LaTeX/font"
+  code <<-EOH
+  ./convert-share.sh
+  EOH
+end
