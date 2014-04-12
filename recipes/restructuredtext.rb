@@ -42,7 +42,7 @@ hg "#{app['home']}/Sphinx-Contrib" do
 end
 
 # Install 3rd-party Sphinx extensions
-%w{googlechart googlemaps httpdomain slide youtube}.each do |extension|
+%w{googlechart googlemaps httpdomain numfig slide youtube}.each do |extension|
   bash "Installing 3rd-party extension #{extension}" do
     user "root"
     cwd "#{app['home']}/Sphinx-Contrib/#{extension}"
