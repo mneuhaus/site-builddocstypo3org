@@ -41,6 +41,17 @@ hg "#{app['home']}/Sphinx-Contrib" do
   action :sync
 end
 
+# Install 3rd-party Sphinx extensions
+%w{googlechart googlemaps httpdomain slide youtube}.each do |extension|
+  bash "Installing 3rd-party extension #{extension}" do
+    user "root"
+    cwd "#{app['home']}/Sphinx-Contrib/#{extension}"
+    code <<-EOH
+    python setup.py install
+    EOH
+  end
+end
+
 # Create directory for Rest Tool
 directory "#{app['home']}/RestTools" do
   owner "#{app['owner']}"
