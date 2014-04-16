@@ -26,10 +26,17 @@ include_recipe "database"
 ####################################################
 # Install required Gems
 ####################################################
-include_recipe "build-essential"
-#chef_gem "mysql" do
-#  action :install
-#end
+
+gem_package "mysql" do
+  action :install
+  # @todo check how the gem path can be less hard-coded...
+  gem_binary "/opt/chef/embedded/bin/gem"
+  options("--no-rdoc --no-ri")
+
+  # I tried this approach:
+  # ruby_home = ::File.expand_path('bin',ruby_prefix_path)
+  # gem_binary "#{ruby_home}/gem"
+end
 
 ####################################################
 # Create database and user
