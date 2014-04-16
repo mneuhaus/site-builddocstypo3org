@@ -69,7 +69,7 @@ if app['databases'][app['chef_environment']]
     password node[:mysql][:users][stage['username']][:password]
     database_name stage['database']
     host stage['host']
-    privileges [:select,:update,:insert,:create,:alter,:drop,:delete]
+    privileges [:select,:update,:insert,:create,:alter,:drop,:delete,:index]
     action :grant
   end
 
