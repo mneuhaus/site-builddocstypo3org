@@ -1,6 +1,6 @@
 <VirtualHost *:80>
     ServerName <%= @server_name %>
-    #ServerAlias *.<%= @server_name %>
+    ServerAlias <%= @server_alias %>
     ServerAdmin admin@example.com
     DocumentRoot "<%= @document_root %>"
     DirectoryIndex index.php Index.html
@@ -10,7 +10,9 @@
     LogLevel warn
 
     # Set Flow context
-    SetEnv FLOW_CONTEXT Production
+    SetEnv FLOW_CONTEXT <%= node['site-docstypo3org']['flow']['context'] %>
+    SetEnv FLOW_ROOTPATH <%= node['site-docstypo3org']['flow']['root_path'] %>
+    SetEnv FLOW_REWRITEURLS 1
 
     <Directory "<%= @document_root %>">
         RedirectMatch permanent ^/login /typo3

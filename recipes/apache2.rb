@@ -25,7 +25,8 @@ include_recipe "apache2::mod_rewrite"
 include_recipe "apache2::mod_expires"
 include_recipe "apache2::mod_headers"
 
-
+# Fix warning when restarting apache2
+# [warn] NameVirtualHost *:443 has no VirtualHosts]
 template "/etc/apache2/ports.conf" do
   source "ports.conf"
 end
@@ -39,12 +40,15 @@ if app['stages'][app['chef_environment']]
 
   stage = app['stages'][app['chef_environment']]
 
-  directory "#{stage['log_directory']}" do
-    owner "#{app['owner']}"
-    group "#{app['group']}"
-    mode "0755"
-    recursive true
-    action :create
+  directories = [stage['log_directory'], stage['document_root']]
+  directories.each do |directory|
+    directory "#{directory}" do
+      owner "#{app['owner']}"
+      group "#{app['group']}"
+      mode "0755"
+      recursive true
+      action :create
+    end
   end
 
   template "#{stage['server_name']}" do
@@ -56,7 +60,8 @@ if app['stages'][app['chef_environment']]
     variables(
       :log_dir => "#{stage['log_directory']}",
       :document_root => "#{stage['document_root']}",
-      :server_name => "#{stage['server_name']}"
+      :server_name => "#{stage['server_name']}",
+      :server_alias => "#{stage['server_alias']}"
     )
   end
 
