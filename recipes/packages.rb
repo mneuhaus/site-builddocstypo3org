@@ -17,16 +17,43 @@
 #
 
 ######################################
-# Install packages
+# Install system packages
 ######################################
 
-app = node.run_state[:current_app]
+packages = %w{
+	tidy
+	acl
+	zip
+	mercurial
+	graphicsmagick
+	graphviz
 
-if app['packages']
-  app['packages'].each do |pkg,ver|
+	libreoffice
+
+	texlive
+	texlive-base
+	texlive-latex-extra
+	texlive-fonts-extra
+
+	python
+	python-pygments
+	python-jinja2
+	python-docutils
+	python-pip
+	python-pygraphviz
+	python-mysqldb
+	python3-setuptools
+
+	php5-mysql
+	php5-curl
+	php5-gd
+	php5-adodb
+	php5-mcrypt
+	php5-sqlite
+	php5-xsl
+	php5-ldap
+}.each do |pkg|
     package pkg do
       action :install
-      version ver if ver && ver.length > 0
     end
-  end
 end
