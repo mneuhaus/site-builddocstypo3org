@@ -28,13 +28,6 @@ packages = %w{
 	graphicsmagick
 	graphviz
 
-	libreoffice
-
-	texlive
-	texlive-base
-	texlive-latex-extra
-	texlive-fonts-extra
-
 	python
 	python-pygments
 	python-jinja2
@@ -56,4 +49,31 @@ packages = %w{
     package pkg do
       action :install
     end
+end
+
+# Only install LibreOffice is configured so, default is false.
+if node['site-docstypo3org']['install']['libreoffice']
+
+  packages = %w{
+    libreoffice
+  }.each do |pkg|
+      package pkg do
+        action :install
+      end
+  end
+end
+
+# Only install TextLive is configured so, default is false.
+if node['site-docstypo3org']['install']['texlive']
+
+  packages = %w{
+    texlive
+    texlive-base
+    texlive-latex-extra
+    texlive-fonts-extra
+  }.each do |pkg|
+      package pkg do
+        action :install
+      end
+  end
 end

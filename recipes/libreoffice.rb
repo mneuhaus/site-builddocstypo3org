@@ -18,26 +18,29 @@
 
 app = node.run_state[:current_app]
 
-# Install LibreOffice daemon
-template "/etc/init.d/libreoffice" do
-  path "/etc/init.d/libreoffice"
-  source "libreoffice.erb"
-  owner "root"
-  group "root"
-  mode 0755
-  variables(
-      :user => app['owner']
-  )
-  notifies :restart, "service[libreoffice]"
-end
+# Only install LibreOffice is configured so, default is false.
+if node['site-docstypo3org']['install']['libreoffice']
 
+  # Install LibreOffice daemon
+  template "/etc/init.d/libreoffice" do
+    path "/etc/init.d/libreoffice"
+    source "libreoffice.erb"
+    owner "root"
+    group "root"
+    mode 0755
+    variables(
+        :user => app['owner']
+    )
+    notifies :restart, "service[libreoffice]"
+  end
 
-service "libreoffice" do
-	start_command "/etc/init.d/libreoffice start"
-	stop_command "/etc/init.d/libreoffice stop"
-	restart_command "/etc/init.d/libreoffice stop; /etc/init.d/libreoffice start"
-	supports [:start, :stop, :restart]
-	#starts the service if it's not running and enables it to start at system boot time
-	action [:enable, :start]
+  service "libreoffice" do
+  	start_command "/etc/init.d/libreoffice start"
+  	stop_command "/etc/init.d/libreoffice stop"
+  	restart_command "/etc/init.d/libreoffice stop; /etc/init.d/libreoffice start"
+  	supports [:start, :stop, :restart]
+  	#starts the service if it's not running and enables it to start at system boot time
+  	action [:enable, :start]
+  end
 end
 

@@ -4,6 +4,8 @@
 
 default['site-docstypo3org']['flow']['context'] = "Production"
 default['site-docstypo3org']['flow']['root_path'] = "/var/www/vhosts/build.docs.typo3.org/releases/current/"
+default['site-docstypo3org']['install']['libreoffice'] = false
+default['site-docstypo3org']['install']['texlive'] = false
 
 
 override['php']['secure_functions'] = false
