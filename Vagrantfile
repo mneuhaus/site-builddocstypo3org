@@ -81,10 +81,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         server_debian_password: 'root',
         server_repl_password: 'root'
       },
+
+      # Override default configuration for the application
       "site-docstypo3org" => {
         app: {
           context: 'Development/Vagrant',
           server_alias: 'build.docs.typo3.dev build.docs.typo3.local'
+        },
+        install: {
+          libreoffice: false, # "true" whether you want conversion of legacy manual.sxw conversion. Takes time to download...
+          texlive: false # "true" whether you want PDF generation. Takes time to download...
         }
       }
     }
