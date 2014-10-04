@@ -1,18 +1,18 @@
 #
 # Author::  Fabien Udriot <fabien.udriot@ecodev.ch>
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 # Recipe:: default
 #
 # Copyright 2012, TYPO3 Association
 #
-# Licensed under the Apache License, Version 2.0 (the"site-docstypo3org::License");
+# Licensed under the Apache License, Version 2.0 (the"site-builddocstypo3org::License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an"site-docstypo3org::AS IS" BASIS,
+# distributed under the License is distributed on an"site-builddocstypo3org::AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
@@ -28,7 +28,7 @@ module TYPO3
     #
     # @return string
     def docs_application_owner
-      node['site-docstypo3org']['app']['owner']
+      node['site-builddocstypo3org']['app']['owner']
     end
 
     # Return the Owner of the application
@@ -43,7 +43,7 @@ module TYPO3
     #
     # @return string
     def docs_base_directory
-      node['site-docstypo3org']['app']['home']
+      node['site-builddocstypo3org']['app']['home']
     end
 
     # Return the "deploy" directory.

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 #
 # Copyright 2012, TYPO3 Association
 #
@@ -39,7 +39,7 @@ home = docs_base_directory
 log_directory = docs_log_directory
 document_root = docs_document_root_directory
 www_group = docs_www_group
-server_name = node['site-docstypo3org']['app']['server_name']
+server_name = node['site-builddocstypo3org']['app']['server_name']
 
 directories = [log_directory, document_root]
 directories.each do |directory|
@@ -62,7 +62,7 @@ template "#{server_name}" do
     :log_dir => "#{log_directory}",
     :document_root => "#{document_root}",
     :server_name => "#{server_name}",
-    :server_alias => node['site-docstypo3org']['app']['server_alias']
+    :server_alias => node['site-builddocstypo3org']['app']['server_alias']
   )
 end
 

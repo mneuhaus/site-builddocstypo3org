@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 #
 # Copyright 2012, TYPO3 Association
 #

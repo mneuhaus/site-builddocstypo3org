@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 #
 # Copyright 2012, TYPO3 Association
 #
@@ -52,7 +52,7 @@ packages = %w{
 end
 
 # Only install TextLive is configured so, default is true.
-if node['site-docstypo3org']['install']['texlive']
+if node['site-builddocstypo3org']['install']['texlive']
 
   packages = %w{
     texlive

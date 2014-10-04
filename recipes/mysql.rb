@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 #
 # Copyright 2012, TYPO3 Association
 #
@@ -45,14 +45,14 @@ include_recipe "database::mysql"
 connection_info = {:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']}
 
 # "production" should be fetched from the environment
-database = node['site-docstypo3org']['database']['name']
-username = node['site-docstypo3org']['database']['username']
-hostname = node['site-docstypo3org']['database']['hostname']
+database = node['site-builddocstypo3org']['database']['name']
+username = node['site-builddocstypo3org']['database']['username']
+hostname = node['site-builddocstypo3org']['database']['hostname']
 
 
 # Generate a password for user
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-node.set_unless['site-docstypo3org']['database']['password'] = secure_password
+node.set_unless['site-builddocstypo3org']['database']['password'] = secure_password
 
 # Create new database
 mysql_database database do
@@ -63,7 +63,7 @@ end
 # Create new user
 mysql_database_user username do
   connection connection_info
-  password node['site-docstypo3org']['database']['password']
+  password node['site-builddocstypo3org']['database']['password']
   database_name database
   host hostname
   privileges [:select,:update,:insert,:create,:alter,:drop,:delete,:index]

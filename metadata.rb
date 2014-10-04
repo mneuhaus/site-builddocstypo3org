@@ -1,4 +1,4 @@
-name "site-docstypo3org"
+name "site-builddocstypo3org"
 maintainer       "TYPO3 Association"
 maintainer_email "fabien.udriot@typo3.org"
 license          "Apache 2.0"

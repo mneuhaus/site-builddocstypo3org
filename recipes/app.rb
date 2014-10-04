@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: site-docstypo3org
+# Cookbook Name:: site-builddocstypo3org
 #
 # Copyright 2012, TYPO3 Association
 #
@@ -33,9 +33,9 @@ shared_to = docs_shared_directory
 document_root = docs_document_root_directory
 
 # Database
-database = node['site-docstypo3org']['database']['name']
-username = node['site-docstypo3org']['database']['username']
-password = node['site-docstypo3org']['database']['password']
+database = node['site-builddocstypo3org']['database']['name']
+username = node['site-builddocstypo3org']['database']['username']
+password = node['site-builddocstypo3org']['database']['password']
 
 # Create home directory
 directory deploy_to do
@@ -47,7 +47,7 @@ directory deploy_to do
 end
 
 # Fetch the default context
-default_context = node['site-docstypo3org']['app']['context']
+default_context = node['site-builddocstypo3org']['app']['context']
 
 # Write Settings.yaml file for different contexts
 contexts = %W[ Production Development ]

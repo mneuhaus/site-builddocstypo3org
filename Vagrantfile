@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  config.vm.hostname = "site-docstypo3org-berkshelf"
+  config.vm.hostname = "site-builddocstypo3org-berkshelf"
 
   # Set the version of chef to install using the vagrant-omnibus plugin
   config.omnibus.chef_version = :latest
@@ -111,7 +111,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :chef_solo do |chef|
 
     chef.custom_config_path = "Vagrantfile.chef"
-    chef.log_level = ENV['CHEF_LOG_LEVEL'] || :info
+    chef.log_level = ENV['CHEF_LOG_LEVEL'] || :debug
 
     chef.json = {
       mysql: {
@@ -121,7 +121,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       },
 
       # Override default configuration for the application
-      "site-docstypo3org" => {
+      "site-builddocstypo3org" => {
         app: {
           context: 'Development/Vagrant',
           server_alias: 'build.docs.typo3.dev build.docs.typo3.local'
@@ -134,7 +134,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     }
 
     chef.run_list = [
-      "recipe[site-docstypo3org::default]"
+      "recipe[site-builddocstypo3org::default]"
     ]
   end
 end
