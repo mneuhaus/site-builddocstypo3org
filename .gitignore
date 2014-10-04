@@ -19,3 +19,6 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
+
+# We want to exclude the application if the Cookbook is used by Vagrant.
+build.docs.typo3.org
