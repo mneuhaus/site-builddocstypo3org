@@ -122,7 +122,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     chef.run_list = [
       "recipe[site-builddocstypo3org::default]"
-      #"recipe[site-builddocstypo3org::vagrant]" @todo test me and improve!
     ]
   end
 end

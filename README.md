@@ -28,12 +28,6 @@ The first step is to create a VM and provision it.
 	vagrant plugin install vagrant-omnibus
 	vagrant plugin install vagrant-berkshelf
 
-	# Get the source
-	git clone https://github.com/TYPO3-cookbooks/site-builddocstypo3org.git DocsTypo3Org
-
-	# Install Gem dependencies
-	cd DocsTypo3Org
-
 	# Fire up the Virtual Machine... this may take some time as it will download an empty VM box
 	vagrant up
 
