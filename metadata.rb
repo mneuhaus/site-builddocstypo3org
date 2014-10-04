@@ -12,6 +12,6 @@ depends "database", '~> 2.3.0'
 depends "mysql", '~> 5.5.3'
 depends "php"
 depends "git", '~> 4.0.2'
-depends "apache2", '~> 2.0.0'
+depends "apache2", '~> 1.11.0'
 depends "python", '~> 1.4.6'
 depends "mercurial", '~> 2.0.4'

@@ -25,12 +25,6 @@ include_recipe "apache2::mod_rewrite"
 include_recipe "apache2::mod_expires"
 include_recipe "apache2::mod_headers"
 
-# Fix warning when restarting apache2
-# [warn] NameVirtualHost *:443 has no VirtualHosts]
-template "/etc/apache2/ports.conf" do
-  source "ports.conf"
-end
-
 ######################################
 # Configure Virtual Host
 ######################################
@@ -67,7 +61,7 @@ template "#{server_name}" do
 end
 
 # Enable Virtual Host
-apache_site "#{server_name}" do
+apache_site server_name do
   enable true
   notifies  :restart, 'service[apache2]'
 end
