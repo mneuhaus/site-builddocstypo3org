@@ -4,7 +4,7 @@ maintainer_email "fabien.udriot@typo3.org"
 license          "Apache 2.0"
 description      "Installs/Configures docs.typo3.org"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "1.1.0"
+version          "1.2.0"
 
 depends "apt", '~> 2.6.0'
 depends "composer", '~> 1.0.5'
