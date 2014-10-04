@@ -8,12 +8,8 @@ default['site-docstypo3org']['install']['libreoffice'] = false
 default['site-docstypo3org']['install']['texlive'] = false
 
 default['php']['secure_functions'] = false
-default['php']['ini_settings'] = {
-  'memory_limit' => '512M',
-  'date.timezone' => 'Europe/Berlin'
-}
-
-default['php']['ini_settings']['open_basedir'] = '/var/wwww/'
+default['php']['ini_settings']['memory_limit'] = '512M'
+default['php']['ini_settings']['date.timezone'] = 'Europe/Berlin'
 
 default['site-docstypo3org']['app']['owner'] = "docsbuilder"
 default['site-docstypo3org']['app']['home'] = "/var/www/vhosts/build.docs.typo3.org"
