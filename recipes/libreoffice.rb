@@ -16,31 +16,37 @@
 # limitations under the License.
 #
 
-# Only install LibreOffice is configured so, default is false.
-if node['site-docstypo3org']['install']['libreoffice']
-
-  owner = docs_application_owner
-
-  # Install LibreOffice daemon
-  template "/etc/init.d/libreoffice" do
-    path "/etc/init.d/libreoffice"
-    source "libreoffice.erb"
-    owner "root"
-    group "root"
-    mode 0755
-    variables(
-        :user => owner
-    )
-    notifies :restart, "service[libreoffice]"
+# Install packages at first
+%w{
+  libreoffice
+}.each do |pkg|
+  package pkg do
+    action :install
   end
+end
 
-  service "libreoffice" do
-  	start_command "/etc/init.d/libreoffice start"
-  	stop_command "/etc/init.d/libreoffice stop"
-  	restart_command "/etc/init.d/libreoffice stop; /etc/init.d/libreoffice start"
-  	supports [:start, :stop, :restart]
-  	#starts the service if it's not running and enables it to start at system boot time
-  	action [:enable, :start]
-  end
+# Create the daemon init starter
+owner = docs_application_owner
+
+# Install LibreOffice daemon
+template "/etc/init.d/libreoffice" do
+  path "/etc/init.d/libreoffice"
+  source "libreoffice.erb"
+  owner "root"
+  group "root"
+  mode 0755
+  variables(
+    :user => owner
+  )
+  notifies :restart, "service[libreoffice]"
+end
+
+service "libreoffice" do
+  start_command "/etc/init.d/libreoffice start"
+  stop_command "/etc/init.d/libreoffice stop"
+  restart_command "/etc/init.d/libreoffice stop; /etc/init.d/libreoffice start"
+  supports [:start, :stop, :restart]
+  #starts the service if it's not running and enables it to start at system boot time
+  action [:enable, :start]
 end
 

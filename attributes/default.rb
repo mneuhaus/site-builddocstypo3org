@@ -2,8 +2,6 @@
 # Cookbook Name:: site-docstypo3org
 # Attributes:: default
 
-#default['site-docstypo3org']['flow']['context'] = "Production"
-#default['site-docstypo3org']['flow']['root_path'] = "/var/www/vhosts/build.docs.typo3.org/releases/current/"
 default['site-docstypo3org']['install']['libreoffice'] = true
 default['site-docstypo3org']['install']['texlive'] = true
 

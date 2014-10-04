@@ -17,51 +17,16 @@
 #
 
 ######################################
-# Install system packages
+# Install TextLive packages
 ######################################
 
-packages = %w{
-	tidy
-	acl
-	zip
-	mercurial
-	graphicsmagick
-	graphviz
-
-	python
-	python-pygments
-	python-jinja2
-	python-docutils
-	python-pip
-	python-pygraphviz
-	python-mysqldb
-	python3-setuptools
-
-	php5-mysql
-	php5-curl
-	php5-gd
-	php5-adodb
-	php5-mcrypt
-	php5-sqlite
-	php5-xsl
-	php5-ldap
+%w{
+  texlive
+  texlive-base
+  texlive-latex-extra
+  texlive-fonts-extra
 }.each do |pkg|
-    package pkg do
-      action :install
-    end
-end
-
-# Only install TextLive is configured so, default is true.
-if node['site-docstypo3org']['install']['texlive']
-
-  packages = %w{
-    texlive
-    texlive-base
-    texlive-latex-extra
-    texlive-fonts-extra
-  }.each do |pkg|
-      package pkg do
-        action :install
-      end
+  package pkg do
+    action :install
   end
 end
