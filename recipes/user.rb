@@ -20,28 +20,29 @@
 # Create User and directories
 ######################################
 
-owner = node['site-docstypo3org']['app']['owner']
-owner_home = "/home/#{owner}"
+owner = docs_application_owner
+owner_home = docs_user_home
+www_group = docs_www_group
 
 # Create directory first, sometimes :manage_home=>true from resource "user" does not work
-directory "#{owner_home}" do
-  owner "#{owner}"
-  group "#{owner}"
+directory owner_home do
+  owner owner
+  group owner
   mode "0755"
   recursive true
   action :create
 end
 
-user "#{owner}" do
+user owner do
   comment "User for build.docs.typo3.org Virtual Host"
   shell "/bin/bash"
-  home "#{owner_home}"
+  home owner_home
   supports :manage_home=>true
 end
 
 # @todo investigate whether it should go into apache2.rb
 # Make sure the user is part of www-data group for write permission
-group node['apache']['group']  do
+group www_group  do
   action :modify
   members owner
   append true

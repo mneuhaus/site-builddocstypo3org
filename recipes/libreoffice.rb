@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-owner = node['site-docstypo3org']['app']['owner']
-
 # Only install LibreOffice is configured so, default is false.
 if node['site-docstypo3org']['install']['libreoffice']
+
+  owner = docs_application_owner
 
   # Install LibreOffice daemon
   template "/etc/init.d/libreoffice" do

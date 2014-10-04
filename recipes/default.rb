@@ -17,12 +17,19 @@
 # limitations under the License.
 #
 
+# Include Helper function
+::Chef::Recipe.send(:include, TYPO3::Docs)
+
+# Must be included in order to have the recipe succeeding at the first run.
 include_recipe "apt"
+
+# Continue provisioning...
 include_recipe "site-docstypo3org::packages"
 include_recipe "site-docstypo3org::user"
 include_recipe "site-docstypo3org::mysql"
 include_recipe "site-docstypo3org::php5"
-#include_recipe "site-docstypo3org::apache2"
-#include_recipe "site-docstypo3org::app"
-#include_recipe "site-docstypo3org::restructuredtext"
-#include_recipe "site-docstypo3org::libreoffice"
+
+include_recipe "site-docstypo3org::apache2"
+include_recipe "site-docstypo3org::app"
+include_recipe "site-docstypo3org::restructuredtext"
+include_recipe "site-docstypo3org::libreoffice"

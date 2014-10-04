@@ -34,20 +34,18 @@ end
 ######################################
 # Configure Virtual Host
 ######################################
-owner = node['site-docstypo3org']['app']['owner']
-home = node['site-docstypo3org']['app']['home']
-server_alias = node['site-docstypo3org']['app']['server_alias']
-log_directory = "#{home}/log"
-document_root = "#{home}/www"
-group = node['apache']['group']
-
+owner = docs_application_owner
+home = docs_base_directory
+log_directory = docs_log_directory
+document_root = docs_document_root_directory
+www_group = docs_www_group
 server_name = node['site-docstypo3org']['app']['server_name']
 
 directories = [log_directory, document_root]
 directories.each do |directory|
   directory "#{directory}" do
     owner owner
-    group group
+    group www_group
     mode "0755"
     recursive true
     action :create
@@ -64,7 +62,7 @@ template "#{server_name}" do
     :log_dir => "#{log_directory}",
     :document_root => "#{document_root}",
     :server_name => "#{server_name}",
-    :server_alias => "#{server_alias}"
+    :server_alias => node['site-docstypo3org']['app']['server_alias']
   )
 end
 

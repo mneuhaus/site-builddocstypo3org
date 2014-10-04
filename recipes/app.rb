@@ -25,23 +25,17 @@ include_recipe "composer"
 # Create User and directories
 ######################################
 
-
-
 # Application variables
-owner = node['site-docstypo3org']['app']['owner']
-home = node['site-docstypo3org']['app']['home']
-deploy_to = "#{home}/releases"
-shared_to = "#{home}/shared"
-document_root = "#{home}/www"
-
+owner = docs_application_owner
+home = docs_base_directory
+deploy_to = docs_deploy_directory
+shared_to = docs_shared_directory
+document_root = docs_document_root_directory
 
 # Database
 database = node['site-docstypo3org']['database']['name']
 username = node['site-docstypo3org']['database']['username']
 password = node['site-docstypo3org']['database']['password']
-
-
-#database = app['databases'][app['chef_environment']]
 
 # Create home directory
 directory deploy_to do
@@ -52,18 +46,16 @@ directory deploy_to do
   action :create
 end
 
-# Make sure context "Development" is always included
-contexts = Array.new
-contexts[0] = app['chef_environment'].capitalize
-if app['chef_environment'] != 'development'
-  contexts[1] = 'Development'
-end
+# Fetch the default context
+default_context = node['site-docstypo3org']['app']['context']
 
 # Write Settings.yaml file for different contexts
+contexts = %W[ Production Development ]
 contexts.each do |context|
 
   # Create shared configuration
   %W[ / /Configuration /Configuration/#{context} ].each do |path|
+
     directory "#{shared_to}#{path}" do
       owner owner
       group owner
@@ -71,6 +63,7 @@ contexts.each do |context|
       #recursive true
       action :create
     end
+
   end
 
   template "#{shared_to}/Configuration/#{context}/Settings.yaml" do
@@ -86,31 +79,6 @@ contexts.each do |context|
   end
 end
 
-
-# @todo vagrant context: check if that can be configured at the level of the Flow application instead of here
-if Chef::Config['solo']
-  link "#{deploy_to}/current" do
-    to "#{deploy_to}/vagrant"
-    owner owner
-    group node['apache']['group']
-  end
-
-  # Symlink Configuration so it is available outside the box.
-  #     link "#{deploy_to}/vagrant/Configuration/Development/Vagrant" do
-  #       to "#{shared_to}/Configuration/Development"
-  #       owner owner
-  #       group node['apache']['group']
-  #     end
-end
-
-# Create some sysmlinks to apps.
-%w{index.php _Resources .htaccess}.each do |file|
-  link "#{document_root}/#{file}" do
-    to "#{deploy_to}/current/Web/#{file}"
-    owner owner
-    group node['apache']['group']
-  end
-end
 
 # Set profile file where global environment variables are defined
 # Notice, it can be a bit dangerous to simply override the file which could evolve with the distrib...

@@ -20,9 +20,9 @@
 include_recipe "python"
 include_recipe "git"
 
-home = node['site-docstypo3org']['app']['home']
-owner = node['site-docstypo3org']['app']['owner']
-group = node['apache']['group']
+home = docs_base_directory
+owner = docs_application_owner
+www_group = docs_www_group
 
 # Install python packages
 %w{sphinx PyYAML docutils pygments}.each do |package|
@@ -34,7 +34,7 @@ end
 # Create directory for Sphinx contrib
 directory "#{home}/Sphinx-Contrib" do
   owner "#{home}/Sphinx-Contrib"
-  group "#{group}"
+  group "#{www_group}"
   mode "0755"
   recursive true
   action :create
@@ -61,7 +61,7 @@ end
 # Create directory for Rest Tool
 directory "#{home}/RestTools" do
   owner "#{owner}"
-  group "#{group}"
+  group "#{www_group}"
   mode "0755"
   recursive true
   action :create
@@ -70,7 +70,7 @@ end
 # Clone reST tools for TYPO3.
 git "#{home}/RestTools" do
   user "#{owner}"
-  group "#{group}"
+  group "#{www_group}"
   repository "git://git.typo3.org/Documentation/RestTools.git"
   action :sync
 end
