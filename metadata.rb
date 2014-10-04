@@ -10,7 +10,7 @@ depends "apt", '~> 2.6.0'
 depends "composer", '~> 1.0.5'
 depends "database", '~> 2.3.0'
 depends "mysql", '~> 5.5.3'
-#depends "php"
+depends "php"
 depends "git", '~> 4.0.2'
 depends "apache2", '~> 2.0.0'
 depends "python", '~> 1.4.6'
