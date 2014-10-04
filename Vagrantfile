@@ -20,7 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If this value is a shorthand to a box in Vagrant Cloud then
   # config.vm.box_url doesn't need to be specified.
   #config.vm.box = "chef/ubuntu-14.04"
-  config.vm.box = "chef/debian-7.6"
+  config.vm.box = "chef/debian-7.4"
+  #config.vm.box = "chef/debian-7.6"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # is not a Vagrant Cloud box and if it doesn't already exist on the
@@ -76,9 +77,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :chef_solo do |chef|
     chef.json = {
       mysql: {
-        server_root_password: 'rootpass',
-        server_debian_password: 'debpass',
-        server_repl_password: 'replpass'
+        server_root_password: 'root',
+        server_debian_password: 'root',
+        server_repl_password: 'root'
+      },
+      "site-docstypo3org" => {
+        app: {
+          context: 'Development/Vagrant',
+          server_alias: 'build.docs.typo3.dev build.docs.typo3.local'
+        }
       }
     }
 

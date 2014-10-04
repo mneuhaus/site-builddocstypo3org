@@ -16,7 +16,13 @@
 # limitations under the License.
 #
 
-app = node.run_state[:current_app]
+# we must run python and git default recipes to be sure we have git and python_pip available
+include_recipe "python"
+include_recipe "git"
+
+home = node['site-docstypo3org']['app']['home']
+owner = node['site-docstypo3org']['app']['owner']
+group = node['apache']['group']
 
 # Install python packages
 %w{sphinx PyYAML docutils pygments}.each do |package|
@@ -26,16 +32,16 @@ app = node.run_state[:current_app]
 end
 
 # Create directory for Sphinx contrib
-directory "#{app['home']}/Sphinx-Contrib" do
-  owner "#{app['home']}/Sphinx-Contrib"
-  group "#{app['group']}"
+directory "#{home}/Sphinx-Contrib" do
+  owner "#{home}/Sphinx-Contrib"
+  group "#{group}"
   mode "0755"
   recursive true
   action :create
 end
 
 # Clone Sphinx-Contrib
-hg "#{app['home']}/Sphinx-Contrib" do
+mercurial "#{home}/Sphinx-Contrib" do
   repository "https://bitbucket.org/xperseguers/sphinx-contrib"
   reference "tip"
   action :sync
@@ -45,7 +51,7 @@ end
 %w{googlechart googlemaps httpdomain numfig slide youtube}.each do |extension|
   bash "Installing 3rd-party extension #{extension}" do
     user "root"
-    cwd "#{app['home']}/Sphinx-Contrib/#{extension}"
+    cwd "#{home}/Sphinx-Contrib/#{extension}"
     code <<-EOH
     python setup.py install
     EOH
@@ -53,18 +59,18 @@ end
 end
 
 # Create directory for Rest Tool
-directory "#{app['home']}/RestTools" do
-  owner "#{app['owner']}"
-  group "#{app['group']}"
+directory "#{home}/RestTools" do
+  owner "#{owner}"
+  group "#{group}"
   mode "0755"
   recursive true
   action :create
 end
 
 # Clone reST tools for TYPO3.
-git "#{app['home']}/RestTools" do
-  user "#{app['owner']}"
-  group "#{app['group']}"
+git "#{home}/RestTools" do
+  user "#{owner}"
+  group "#{group}"
   repository "git://git.typo3.org/Documentation/RestTools.git"
   action :sync
 end
@@ -72,7 +78,7 @@ end
 # ... install TYPO3 theme (t3sphinx)
 bash "install_t3sphinx" do
   user "root"
-  cwd "#{app['home']}/RestTools/ExtendingSphinxForTYPO3"
+  cwd "#{home}/RestTools/ExtendingSphinxForTYPO3"
   code <<-EOH
   python setup.py install
   EOH
@@ -81,7 +87,7 @@ end
 # ... and convert the Share font
 bash "convert_sharefont" do
   user "root"
-  cwd "#{app['home']}/RestTools/LaTeX/font"
+  cwd "#{home}/RestTools/LaTeX/font"
   code <<-EOH
   ./convert-share.sh
   EOH

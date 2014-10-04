@@ -20,39 +20,37 @@
 # Create User and directories
 ######################################
 
-app = node.run_state[:current_app]
+owner = node['site-docstypo3org']['app']['owner']
+owner_home = "/home/#{owner}"
 
-if app['owner'] && app['owner_home']
+# Create directory first, sometimes :manage_home=>true from resource "user" does not work
+directory "#{owner_home}" do
+  owner "#{owner}"
+  group "#{owner}"
+  mode "0755"
+  recursive true
+  action :create
+end
 
-  # Create directory first, sometimes :manage_home=>true from resource "user" does not work
-  directory "#{app['owner_home']}" do
-    owner "#{app['owner']}"
-    group "#{app['owner']}"
-    mode "0755"
-    recursive true
-    action :create
-  end
+user "#{owner}" do
+  comment "User for build.docs.typo3.org Virtual Host"
+  shell "/bin/bash"
+  home "#{owner_home}"
+  supports :manage_home=>true
+end
 
-  user "#{app['owner']}" do
-    comment "User for build.docs.typo3.org Virtual Host"
-    shell "/bin/bash"
-    home "#{app['owner_home']}"
-    supports :manage_home=>true
-  end
+# @todo investigate whether it should go into apache2.rb
+# Make sure the user is part of www-data group for write permission
+group node['apache']['group']  do
+  action :modify
+  members owner
+  append true
+end
 
-  # Make sure the user is part of www-data group for write permission
-  group "www-data" do
-    action :modify
-    members app['owner']
-    append true
-  end
-
-  # Add some git default shortcut for convenience sake
-  template "#{app['owner_home']}/.gitconfig" do
-    path "#{app['owner_home']}/.gitconfig"
-    source "gitconfig.erb"
-    owner "#{app['owner']}"
-    group "#{app['owner']}"
-  end
-
+# Add some git default shortcut for convenience sake
+template "#{owner_home}/.gitconfig" do
+  path "#{owner_home}/.gitconfig"
+  source "gitconfig.erb"
+  owner "#{owner}"
+  group "#{owner}"
 end

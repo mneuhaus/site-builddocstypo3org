@@ -34,44 +34,47 @@ end
 ######################################
 # Configure Virtual Host
 ######################################
-app = node.run_state[:current_app]
+owner = node['site-docstypo3org']['app']['owner']
+home = node['site-docstypo3org']['app']['home']
+server_alias = node['site-docstypo3org']['app']['server_alias']
+log_directory = "#{home}/log"
+document_root = "#{home}/www"
+group = node['apache']['group']
 
-if app['stages'][app['chef_environment']]
+server_name = node['site-docstypo3org']['app']['server_name']
 
-  stage = app['stages'][app['chef_environment']]
-
-  directories = [stage['log_directory'], stage['document_root']]
-  directories.each do |directory|
-    directory "#{directory}" do
-      owner "#{app['owner']}"
-      group "#{app['group']}"
-      mode "0755"
-      recursive true
-      action :create
-    end
-  end
-
-  template "#{stage['server_name']}" do
-    path "#{node[:apache][:dir]}/sites-available/#{stage['server_name']}"
-    source "apache2-site-vhost.erb"
-    owner node[:apache][:user]
-    group node[:apache][:group]
-    mode 0644
-    variables(
-      :log_dir => "#{stage['log_directory']}",
-      :document_root => "#{stage['document_root']}",
-      :server_name => "#{stage['server_name']}",
-      :server_alias => "#{stage['server_alias']}"
-    )
-  end
-
-  # Enable Virtual Host
-  apache_site "#{stage['server_name']}" do
-    enable true
-    notifies  :restart, 'service[apache2]'
-  end
-
-  apache_module "speling" do
-    enable true
+directories = [log_directory, document_root]
+directories.each do |directory|
+  directory "#{directory}" do
+    owner owner
+    group group
+    mode "0755"
+    recursive true
+    action :create
   end
 end
+
+template "#{server_name}" do
+  path "#{node[:apache][:dir]}/sites-available/#{server_name}"
+  source "apache2-site-vhost.erb"
+  owner node[:apache][:user]
+  group node[:apache][:group]
+  mode 0644
+  variables(
+    :log_dir => "#{log_directory}",
+    :document_root => "#{document_root}",
+    :server_name => "#{server_name}",
+    :server_alias => "#{server_alias}"
+  )
+end
+
+# Enable Virtual Host
+apache_site "#{server_name}" do
+  enable true
+  notifies  :restart, 'service[apache2]'
+end
+
+apache_module "speling" do
+  enable true
+end
+

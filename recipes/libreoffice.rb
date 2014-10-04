@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-app = node.run_state[:current_app]
+owner = node['site-docstypo3org']['app']['owner']
 
 # Only install LibreOffice is configured so, default is false.
 if node['site-docstypo3org']['install']['libreoffice']
@@ -29,7 +29,7 @@ if node['site-docstypo3org']['install']['libreoffice']
     group "root"
     mode 0755
     variables(
-        :user => app['owner']
+        :user => owner
     )
     notifies :restart, "service[libreoffice]"
   end

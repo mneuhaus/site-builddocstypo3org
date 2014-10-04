@@ -21,22 +21,22 @@
 ####################################################
 include_recipe "mysql::server"
 include_recipe "mysql::client"
-include_recipe "database"
+include_recipe "database::mysql"
 
 ####################################################
 # Install required Gems
 ####################################################
 
-gem_package "mysql" do
-  action :install
-  # @todo check how the gem path can be less hard-coded...
-  gem_binary "/opt/chef/embedded/bin/gem"
-  options("--no-rdoc --no-ri")
-
-  # I tried this approach:
-  # ruby_home = ::File.expand_path('bin',ruby_prefix_path)
-  # gem_binary "#{ruby_home}/gem"
-end
+#gem_package "mysql" do
+#  action :install
+#  # @todo check how the gem path can be less hard-coded...
+#  gem_binary "/opt/chef/embedded/bin/gem"
+#  options("--no-rdoc --no-ri")
+#
+#  # I tried this approach:
+#  # ruby_home = ::File.expand_path('bin',ruby_prefix_path)
+#  # gem_binary "#{ruby_home}/gem"
+#end
 
 ####################################################
 # Create database and user
@@ -44,33 +44,28 @@ end
 
 connection_info = {:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']}
 
-app = node.run_state[:current_app]
-
-
 # "production" should be fetched from the environment
+database = node['site-docstypo3org']['database']['name']
+username = node['site-docstypo3org']['database']['username']
+hostname = node['site-docstypo3org']['database']['hostname']
 
-if app['databases'][app['chef_environment']]
 
-  stage = app['databases'][app['chef_environment']]
+# Generate a password for user
+::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+node.set_unless['site-docstypo3org']['database']['password'] = secure_password
 
-  # Generate a password for user
-  ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-  node.set_unless[:mysql][:users][stage['username']][:password] = secure_password
+# Create new database
+mysql_database database do
+  connection connection_info
+  action :create
+end
 
-  # Create new database
-  mysql_database "#{stage['database']}" do
-    connection connection_info
-    action :create
-  end
-
-  # Create new user
-  mysql_database_user stage['username'] do
-    connection connection_info
-    password node[:mysql][:users][stage['username']][:password]
-    database_name stage['database']
-    host stage['host']
-    privileges [:select,:update,:insert,:create,:alter,:drop,:delete,:index]
-    action :grant
-  end
-
+# Create new user
+mysql_database_user username do
+  connection connection_info
+  password node['site-docstypo3org']['database']['password']
+  database_name database
+  host hostname
+  privileges [:select,:update,:insert,:create,:alter,:drop,:delete,:index]
+  action :grant
 end
