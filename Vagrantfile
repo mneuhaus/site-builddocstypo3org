@@ -1,6 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+box = {
+  :name => 'build.docs.typo3.box',
+  :ip => '192.168.188.130'
+}
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -22,13 +27,12 @@ unless Vagrant.has_plugin?("vagrant-berkshelf")
   raise 'Missing plugin! Install with `vagrant plugin install vagrant-berkshelf`'
 end
 
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  config.vm.hostname = "site-builddocstypo3org-berkshelf"
+  config.vm.hostname = box[:name]
 
   # Set the version of chef to install using the vagrant-omnibus plugin
   config.omnibus.chef_version = :latest
@@ -37,13 +41,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If this value is a shorthand to a box in Vagrant Cloud then
   # config.vm.box_url doesn't need to be specified.
   #config.vm.box = "chef/ubuntu-14.04"
-  config.vm.box = "chef/debian-7.6"
+  config.vm.box = ENV['VAGRANT_BOX'] || "chef/debian-7.6"
 
   # Assign this VM to a host-only network IP, allowing you to access it
   # via the IP. Host-only networks can talk to the host machine as well as
   # any other machines on the same network, but cannot be accessed (through this
   # network interface) by any external networks.
-  config.vm.network :private_network, type: "dhcp"
+  config.vm.network :private_network, ip: box[:ip]
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -55,30 +59,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
-   #########################
+  #########################
   # Shared folders
   #########################
 
   # Disable default shared folder
   config.vm.synced_folder ".", "/vagrant", disabled: true
-
-  domain = "build.docs.typo3.org"
-
-  # Share site folder into releases folder
-  #config.vm.synced_folder domain, "/var/www/vhosts/" + domain + "/releases/vagrant",
-  #                        type: "rsync",
-  #                        rsync__exclude: [
-  #                          ".git/",
-  #                          ".idea/",
-  #                          ".DS_Store",
-  #                          "Configuration/PackageStates.php",
-  #                          "Configuration/Production/",
-  #                          "Configuration/Development/",
-  #                          "Data/Temporary/",
-  #                          "Data/Surf/",
-  #                          "Data/Logs/",
-  #                          "Web/_Resources/"
-  #                        ]
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -111,7 +97,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :chef_solo do |chef|
 
     chef.custom_config_path = "Vagrantfile.chef"
-    chef.log_level = ENV['CHEF_LOG_LEVEL'] || :debug
+    chef.log_level = ENV['CHEF_LOG_LEVEL'] || :info
 
     chef.json = {
       mysql: {
