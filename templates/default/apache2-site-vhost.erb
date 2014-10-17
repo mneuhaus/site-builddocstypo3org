@@ -11,7 +11,7 @@
 
     # Set Flow context
     SetEnv FLOW_CONTEXT <%= node['site-builddocstypo3org']['app']['context'] %>
-    SetEnv FLOW_ROOTPATH <%= node['site-builddocstypo3org']['app']['home'] %>/releases/current/
+    SetEnv FLOW_ROOTPATH <%= node['site-builddocstypo3org']['app']['home'] %>/releases/vagrant/
     SetEnv FLOW_REWRITEURLS 1
 
     <Directory "<%= @document_root %>">
